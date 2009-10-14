@@ -1,0 +1,68 @@
+#!/bin/bash
+
+## sarplot.sh
+## Hereward Cooper - 14/10/2009
+## A hack to plot various system resource information from sar using gnuplot
+
+## Start off doing some checks for required programs
+if [ ! -f /usr/bin/gnuplot ]
+then
+        echo "CRITICAL: gnuplot missing!"
+        exit 1;
+fi
+
+if [ ! -f /usr/bin/sar ]
+then
+        echo "CRITICAL: sar missing!"
+        exit 1;
+fi
+
+
+#####################################################
+## Next Define some of the graphs you want to plot ##
+## metric = the flag to pass sar                   ##
+## field = the coloumn in the output to plot       ##
+## title = human readable version of the field     ##
+#####################################################
+
+# Swap Usage
+if [[ $1 == "swap" ]]
+then
+        metric="-r"
+        field=",9"
+        title="% Swap Usage"
+
+# 1 Minute Load Average
+elif [[ $1 == "load" ]]
+then
+        metric="-q"
+        field=",4"
+        title="1 Minute Load Average"
+
+# Disk Read IO
+elif [[ $1 == "io" ]]
+then
+        metric="-b"
+        field=",3"
+        title="Read Requests per Second"
+
+# Failback to CPU %idle if nothing defined
+else
+        metric="-u"
+        field=",8"
+        title="CPU %Idle"
+fi
+
+#####################################
+## This is where the magic happens ##
+#####################################
+
+/usr/bin/sar $metric | tr -s " " | cut -f 1$field -d " "| tail -n +4 | head -n -1 > /tmp/sar-load
+
+echo 'set terminal dumb;
+set title "'$title'";
+set xdata time;
+set timefmt "%H:%M:%S";
+set xlabel "Time";
+plot "/tmp/sar-load" using 1:2 with lines title "'$title'";' | gnuplot
+
