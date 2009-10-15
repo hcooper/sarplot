@@ -28,7 +28,7 @@ fi
 # Swap Usage
 if [[ $1 == "swap" ]]
 then
-	sar -r | grep swpused || exit 1
+	sar -r | grep swpused || echo "No Swap Detected"; exit 1
         metric="-r"
         field=",9"
         title="% Swap Usage"
