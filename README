@@ -2,7 +2,7 @@ sarplot - a script to turn the extremly useful data produced from sar/sysstat in
 
 Example plot of 1 minute load averages:
 
-$ ./sarplot.sh load
+$ ./sarplot load
 
  0.05 ++-+---+--+---+--+--+---+--+---+--+--+---+--+---+--+--+---+--+*--+-++
          +      +      +     +      +      +    1 Minute Load Average ****** +
