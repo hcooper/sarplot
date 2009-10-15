@@ -47,10 +47,17 @@ then
         title="Read Requests per Second"
 
 # Failback to CPU %idle if nothing defined
-else
+elif [[ $1 == "cpu" ]]
+then
         metric="-u"
         field=",8"
         title="CPU %Idle"
+else
+	echo "#########################"
+	echo "Give me a metric to plot!"
+	echo "And not some dumb one...!"
+	echo "#########################"
+	exit 1;
 fi
 
 #####################################
