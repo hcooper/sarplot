@@ -76,6 +76,6 @@ set xdata time;
 set timefmt '%H:%M:%S';
 set xlabel 'Time';
 plot '$TMPFILE' using 1:2 with lines title '$title';" | gnuplot
-rm $TMPFILE
+#rm $TMPFILE
 
 echo $metric;

@@ -27,12 +27,3 @@ $ ./sarplot load
        0 ***************-***************-***************+******-******---+--++
        00:00    02:00   04:00    06:00   08:00    10:00   12:00    14:00  16:00
                                          Time
-
-
-TODO:
- -  graph data older than today
- -  add better handling of errors
- -  add lots of sar flags
- -  may rewrite the flag handling part to make it more flexiable
- -  autodetect stuff like swap better
- -  make a cup of tea
