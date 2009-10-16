@@ -66,13 +66,15 @@ fi
 ## This is where the magic happens ##
 #####################################
 
-/usr/bin/sar $metric | tr -s " " | cut -f 1$field -d " "| tail -n +4 | head -n -1 > /tmp/sar-load
+TMPFILE=`mktemp /tmp/sarplot.XXXXXXXXXX`
 
-echo 'set terminal dumb;
-set title "'$title'";
+/usr/bin/sar $metric | tr -s " " | cut -f 1$field -d " "| tail -n +4 | head -n -1 > $TMPFILE
+
+echo "set terminal dumb;
+set title '$title';
 set xdata time;
-set timefmt "%H:%M:%S";
-set xlabel "Time";
-plot "/tmp/sar-load" using 1:2 with lines title "'$title'";' | gnuplot
+set timefmt '%H:%M:%S';
+set xlabel 'Time';
+plot '$TMPFILE' using 1:2 with lines title '$title';" | gnuplot
 
 echo $metric;
