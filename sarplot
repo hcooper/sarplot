@@ -47,12 +47,20 @@ then
         field=",3"
         title="Read Requests per Second"
 
+# Network Inbound
+elif [[ $1 == "netin" ]]
+then
+	metric="-n DEV | grep eth0"
+	field=",5"
+	title="kB/s Recieved on eth0"
+
 # Failback to CPU %idle if nothing defined
 elif [[ $1 == "cpu" ]]
 then
         metric="-u"
         field=",8"
         title="CPU %Idle"
+
 else
 	echo "###############################"
 	echo "## Give me a metric to plot! ##"
@@ -74,3 +82,4 @@ set timefmt "%H:%M:%S";
 set xlabel "Time";
 plot "/tmp/sar-load" using 1:2 with lines title "'$title'";' | gnuplot
 
+echo $metric;
