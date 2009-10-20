@@ -30,35 +30,35 @@ if [[ $1 == "swap" ]]
 then
 	sar -r | grep swpused || echo "No Swap Detected"; exit 1
         metric="-r"
-        field=",9"
+        field="kbbuffers"
         title="% Swap Usage"
 
 # 1 Minute Load Average
 elif [[ $1 == "load" ]]
 then
         metric="-q"
-        field=",4"
+        field="ldavg-1"
         title="1 Minute Load Average"
 
 # Disk Read IO
 elif [[ $1 == "io" ]]
 then
         metric="-b"
-        field=",3"
+        field="btps"
         title="Read Requests per Second"
 
 # Network Inbound
 elif [[ $1 == "netin" ]]
 then
-	metric="-n DEV | grep eth0"
-	field=",5"
+	metric="-n DEV "
+	field="eth0.*rxkB"
 	title="kB/s Recieved on eth0"
 
 # Failback to CPU %idle if nothing defined
 elif [[ $1 == "cpu" || $# -eq 0 ]]
 then
         metric="-u"
-        field=",8"
+        field="%idle"
         title="CPU %Idle"
 else
 	echo "Invalid metric specified!"
@@ -71,12 +71,13 @@ fi
 
 TMPFILE=`mktemp /tmp/sarplot.XXXXXXXXXX`
 
-/usr/bin/sar $metric | tr -s " " | cut -f 1$field -d " "| tail -n +4 | head -n -1 > $TMPFILE
+/usr/bin/sadf -- $metric | awk "/$field/ {print \$3,\$6}" > $TMPFILE
+echo awk "/$field/ {print \$3,\$6}" 
 
 echo "set terminal dumb;
 set title '$title';
 set xdata time;
-set timefmt '%H:%M:%S';
+set timefmt '%s';
 set xlabel 'Time';
 plot '$TMPFILE' using 1:2 with lines title '$title';" | gnuplot
-rm $TMPFILE
+rm -f $TMPFILE
