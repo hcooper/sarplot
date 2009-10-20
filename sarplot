@@ -44,7 +44,7 @@ then
 elif [[ $1 == "io" ]]
 then
         metric="-b"
-        field="btps"
+        field="rtps"
         title="Read Requests per Second"
 
 # Network Inbound
