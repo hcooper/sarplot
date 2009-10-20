@@ -60,6 +60,9 @@ then
         metric="-u"
         field=",8"
         title="CPU %Idle"
+else
+	echo "Invalid metric specified!"
+	exit 1
 fi
 
 #####################################
