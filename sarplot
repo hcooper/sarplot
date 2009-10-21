@@ -54,6 +54,12 @@ then
 	field="eth0.*rxkB"
 	title="kB/s Recieved on eth0"
 
+elif [[ $1 == "ctx" ]]
+then
+	metric="-w"
+	field="cswch"
+	title="Context switches/second"
+
 # Failback to CPU %idle if nothing defined
 elif [[ $1 == "cpu" || $# -eq 0 ]]
 then
