@@ -11,7 +11,7 @@ then
         exit 1;
 fi
 
-if [ ! -f /usr/bin/sar ]
+if [ ! -f /usr/bin/sadf]
 then
         echo "CRITICAL: sar missing!"
         exit 1;
