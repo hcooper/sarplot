@@ -58,7 +58,7 @@ then
 elif [[ $1 == "netin" ]]
 then
         metric="-n DEV "
-        field="eth0.*rxkB"
+        field="eth0.*rxbyt"
         title="kB/s Recieved on eth0"
 
 elif [[ $1 == "ctx" ]]
