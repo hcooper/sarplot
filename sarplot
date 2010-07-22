@@ -86,7 +86,7 @@ TMPFILE=`mktemp /tmp/sarplot.XXXXXXXXXX`
 
 /usr/bin/sadf -- $metric | awk "/$field/ {print \$3,\$6}" > $TMPFILE
 
-echo "set terminal dumb;
+echo "set terminal png;
 set title '$title';
 set xdata time;
 set timefmt '%s';
