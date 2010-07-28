@@ -60,6 +60,13 @@ then
 	field="cswch"
 	title="Context switches/second"
 
+elif [[ $1 == "iowait" ]]
+then
+	metric="-u"
+	field="iowait"
+	title="Context switches/second"
+
+
 # Failback to CPU %idle if nothing defined
 elif [[ $1 == "cpu" || $# -eq 0 ]]
 then
