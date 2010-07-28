@@ -11,7 +11,7 @@ then
         exit 1;
 fi
 
-if [ ! -f /usr/bin/sar ]
+if [ ! -f /usr/bin/sadf ]
 then
         echo "CRITICAL: sar missing!"
         exit 1;
@@ -28,7 +28,7 @@ fi
 # Swap Usage
 if [[ $1 == "swap" ]]
 then
-	sar -r | grep swpused || echo "No Swap Detected"; exit 1
+        sar -r | grep swpused || echo "No Swap Detected"; exit 1
         metric="-r"
         field="kbbuffers"
         title="% Swap Usage"
@@ -47,18 +47,25 @@ then
         field="rtps"
         title="Read Requests per Second"
 
+# Disk Write IO
+elif [[ $1 == "iow" ]]
+then
+        metric="-b"
+        field="wtps"
+        title="Write Requests per Second"
+
 # Network Inbound
 elif [[ $1 == "netin" ]]
 then
-	metric="-n DEV "
-	field="eth0.*rxkB"
-	title="kB/s Recieved on eth0"
+        metric="-n DEV "
+        field="eth0.*rxbyt"
+        title="kB/s Recieved on eth0"
 
 elif [[ $1 == "ctx" ]]
 then
-	metric="-w"
-	field="cswch"
-	title="Context switches/second"
+        metric="-w"
+        field="cswch"
+        title="Context switches/second"
 
 elif [[ $1 == "iowait" ]]
 then
@@ -74,8 +81,8 @@ then
         field="%idle"
         title="CPU %Idle"
 else
-	echo "Invalid metric specified!"
-	exit 1
+        echo "Invalid metric specified!"
+        exit 1
 fi
 
 #####################################
