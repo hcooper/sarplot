@@ -1,27 +1,29 @@
 #!/bin/bash
 
 ## sarplot.sh
-## Hereward Cooper - 14/10/2009
+## Hereward Cooper - 14/10/2009-
+## James Hannah    - 14/10/2009-
 ## A hack to plot various system resource information from sar using gnuplot
 
 # Begin new option parsing code...
 usage="Usage: $0 [-m METRIC] [-d DAY]"
 metric=""
 sadate=""
-while getopts ":m:d:" options; do
+while getopts ":wm:d:" options; do
   case $options in
     m ) metric=$OPTARG;;
- d ) sadate=$OPTARG
+    d ) sadate=$OPTARG
      if [ -d /var/log/sa ]; then
-      safile="/var/log/sa/sa$sadate"
+      saprefix="/var/log/sa/sa"
      else
       if [ -d /var/log/sysstat ]; then
-       safile="/var/log/sysstat/sa$sadate"
-   fi
-  fi;;
- : ) echo "Missing parameter to option: -$OPTARG"
-     echo $usage
-  exit 1;;
+       saprefix="/var/log/sysstat/sa"
+      fi
+     fi;;
+    w ) FROMFIRST=true;;
+    : ) echo "Missing parameter to option: -$OPTARG"
+        echo $usage
+        exit 1;;
     \? ) echo $usage
          exit 1;;
     * ) echo $usage
@@ -119,7 +121,13 @@ fi
 
 TMPFILE=`mktemp /tmp/sarplot.XXXXXXXXXX`
 
-/usr/bin/sadf $safile -- $metric | awk "/$field/ {print \$3,\$6}" > $TMPFILE
+if [ "xxx$FROMSTARTyyy" != "xxxyyy" ]; then
+    weekstart=$(($sadate-7))
+    for d in `seq $weekstart $(($sadate-1))`; do
+        /usr/bin/sadf $saprefix$d -- $metric | awk "/$field/ {print \$3,\$6}" >> $TMPFILE
+    done
+fi
+/usr/bin/sadf $saprefix$sadate -- $metric | awk "/$field/ {print \$3,\$6}" >> $TMPFILE
 echo "set terminal dumb;
 set title '$title';
 set xdata time;
