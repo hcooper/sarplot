@@ -1,4 +1,5 @@
 #!/bin/bash
+
 ## sarplot.sh
 ## Hereward Cooper - 14/10/2009-
 ## James Hannah    - 14/10/2009-
@@ -77,11 +78,7 @@ then
         title="Read Requests per Second"
 
 # Disk Write IO
-<<<<<<< HEAD:sarplot
 elif [[ $metric == "iow" ]]
-=======
-elif [[ $1 == "iow" ]]
->>>>>>> 842a8da6ee7ec72046a3f5188cb1fac86ec455bd:sarplot
 then
         metric="-b"
         field="wtps"
@@ -102,22 +99,10 @@ then
 
 elif [[ $metric == "iowait" ]]
 then
-<<<<<<< HEAD:sarplot
  metric="-u"
  field="iowait"
  title="Context switches/second"
 
-=======
-        metric="-n DEV "
-        field="eth0.*rxbyt"
-        title="kB/s Recieved on eth0"
-
-elif [[ $1 == "ctx" ]]
-then
-        metric="-w"
-        field="cswch"
-        title="Context switches/second"
->>>>>>> 842a8da6ee7ec72046a3f5188cb1fac86ec455bd:sarplot
 
 # Failback to CPU %idle if nothing defined
 elif [[ $metric == "cpu" || $# -eq 0 ]]
@@ -136,7 +121,6 @@ fi
 
 TMPFILE=`mktemp /tmp/sarplot.XXXXXXXXXX`
 
-<<<<<<< HEAD:sarplot
 if [ "xxx$FROMSTARTyyy" != "xxxyyy" ]; then
     weekstart=$(($sadate-7))
     for d in `seq $weekstart $(($sadate-1))`; do
@@ -145,11 +129,6 @@ if [ "xxx$FROMSTARTyyy" != "xxxyyy" ]; then
 fi
 /usr/bin/sadf $saprefix$sadate -- $metric | awk "/$field/ {print \$3,\$6}" >> $TMPFILE
 echo "set terminal dumb;
-=======
-/usr/bin/sadf -- $metric | awk "/$field/ {print \$3,\$6}" > $TMPFILE
-
-echo "set terminal png;
->>>>>>> 842a8da6ee7ec72046a3f5188cb1fac86ec455bd:sarplot
 set title '$title';
 set xdata time;
 set timefmt '%s';
