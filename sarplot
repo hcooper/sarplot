@@ -1,8 +1,38 @@
 #!/bin/bash
 
 ## sarplot.sh
-## Hereward Cooper - 14/10/2009
+## Hereward Cooper - 14/10/2009-
+## James Hannah    - 14/10/2009-
 ## A hack to plot various system resource information from sar using gnuplot
+
+# Begin new option parsing code...
+usage="Usage: $0 [-m METRIC] [-d DAY]"
+metric=""
+sadate=""
+while getopts ":wm:d:" options; do
+  case $options in
+    m ) metric=$OPTARG;;
+    d ) sadate=$OPTARG
+     if [ -d /var/log/sa ]; then
+      saprefix="/var/log/sa/sa"
+     else
+      if [ -d /var/log/sysstat ]; then
+       saprefix="/var/log/sysstat/sa"
+      fi
+     fi;;
+    w ) FROMFIRST=true;;
+    : ) echo "Missing parameter to option: -$OPTARG"
+        echo $usage
+        exit 1;;
+    \? ) echo $usage
+         exit 1;;
+    * ) echo $usage
+          exit 1;;
+  esac
+done
+if [ "xxx${metric}yyy" == "xxxyyy" ]; then
+    metric="cpu"
+fi
 
 ## Start off doing some checks for required programs
 if [ ! -f /usr/bin/gnuplot ]
@@ -26,7 +56,7 @@ fi
 #####################################################
 
 # Swap Usage
-if [[ $1 == "swap" ]]
+if [[ $metric == "swap" ]]
 then
         sar -r | grep swpused || echo "No Swap Detected"; exit 1
         metric="-r"
@@ -34,29 +64,51 @@ then
         title="% Swap Usage"
 
 # 1 Minute Load Average
-elif [[ $1 == "load" ]]
+elif [[ $metric == "load" ]]
 then
         metric="-q"
         field="ldavg-1"
         title="1 Minute Load Average"
 
 # Disk Read IO
-elif [[ $1 == "io" ]]
+elif [[ $metric == "io" ]]
 then
         metric="-b"
         field="rtps"
         title="Read Requests per Second"
 
 # Disk Write IO
+<<<<<<< HEAD:sarplot
+elif [[ $metric == "iow" ]]
+=======
 elif [[ $1 == "iow" ]]
+>>>>>>> 842a8da6ee7ec72046a3f5188cb1fac86ec455bd:sarplot
 then
         metric="-b"
         field="wtps"
         title="Write Requests per Second"
 
 # Network Inbound
-elif [[ $1 == "netin" ]]
+elif [[ $metric == "netin" ]]
 then
+        metric="-n DEV "
+        field="eth0.*rxbyt"
+        title="kB/s Recieved on eth0"
+
+elif [[ $metric == "ctx" ]]
+then
+        metric="-w"
+        field="cswch"
+        title="Context switches/second"
+
+elif [[ $metric == "iowait" ]]
+then
+<<<<<<< HEAD:sarplot
+ metric="-u"
+ field="iowait"
+ title="Context switches/second"
+
+=======
         metric="-n DEV "
         field="eth0.*rxbyt"
         title="kB/s Recieved on eth0"
@@ -66,9 +118,10 @@ then
         metric="-w"
         field="cswch"
         title="Context switches/second"
+>>>>>>> 842a8da6ee7ec72046a3f5188cb1fac86ec455bd:sarplot
 
 # Failback to CPU %idle if nothing defined
-elif [[ $1 == "cpu" || $# -eq 0 ]]
+elif [[ $metric == "cpu" || $# -eq 0 ]]
 then
         metric="-u"
         field="%idle"
@@ -84,9 +137,20 @@ fi
 
 TMPFILE=`mktemp /tmp/sarplot.XXXXXXXXXX`
 
+<<<<<<< HEAD:sarplot
+if [ "xxx$FROMSTARTyyy" != "xxxyyy" ]; then
+    weekstart=$(($sadate-7))
+    for d in `seq $weekstart $(($sadate-1))`; do
+        /usr/bin/sadf $saprefix$d -- $metric | awk "/$field/ {print \$3,\$6}" >> $TMPFILE
+    done
+fi
+/usr/bin/sadf $saprefix$sadate -- $metric | awk "/$field/ {print \$3,\$6}" >> $TMPFILE
+echo "set terminal dumb;
+=======
 /usr/bin/sadf -- $metric | awk "/$field/ {print \$3,\$6}" > $TMPFILE
 
 echo "set terminal png;
+>>>>>>> 842a8da6ee7ec72046a3f5188cb1fac86ec455bd:sarplot
 set title '$title';
 set xdata time;
 set timefmt '%s';
